@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,10 +16,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.myapplication.ultils.Utils.LIST_NAME;
+import static com.example.myapplication.ultils.Utils.TASK_LIST;
+
 public class MainActivity extends AppCompatActivity {
 
-    private static final String NAME = "extra_name" ;
-    private static final String TASK_LIST =  "extra_list";
     private static final String STRING = "extra_string" ;
     TextView textViewSave;
     TextView textViewLoad;
@@ -33,26 +35,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        conrtact = "phonglt";
-        mStringList.add("phong");
-        mStringList.add("phong");
-        mStringList.add("phong");
-        mStringList.add("phong");
-        mStringList.add("phong");
+        initData();
         textViewSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveString(conrtact);
+                saveData(mStringList);
             }
         });
 
         textViewLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadString();
+                startActivity(new Intent(MainActivity.this,SeconActivity.class));
             }
         });
 
+    }
+
+    private void initData() {
+        conrtact = "phonglt";
+        mStringList.add("phong");
+        mStringList.add("phong");
+        mStringList.add("phong");
+        mStringList.add("phong");
+        mStringList.add("phong");
     }
 
     private void initView() {
@@ -60,43 +66,43 @@ public class MainActivity extends AppCompatActivity {
         textViewLoad = findViewById(R.id.loadData);
     }
 
-    private void saveString(String contact){
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME,MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(contact);
-        editor.putString(STRING, json);
-        editor.commit();
+//    private void saveString(String contact){
+//        SharedPreferences sharedPreferences = getSharedPreferences(NAME,MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        Gson gson = new Gson();
+//        String json = gson.toJson(contact);
+//        editor.putString(NAME, json);
+//        editor.commit();
+//    }
+
+//    private void loadString(){
+//        SharedPreferences sharedPreferences = getSharedPreferences(NAME,MODE_PRIVATE);
+//        Gson gson = new Gson();
+//        String json = sharedPreferences.getString(STRING,null);
+//        Type type = new TypeToken<String>() {}.getType();
+//        b = gson.fromJson(json,type);
+//    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("AAAA","onStop");
     }
 
-    private void loadString(){
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME,MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString(STRING,null);
-        Type type = new TypeToken<String>() {}.getType();
-        b = gson.fromJson(json,type);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("AAAA","onDestroy");
     }
-
-
 
     private void saveData(List<String> list){
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME,MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(LIST_NAME,MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(list);
         editor.putString(TASK_LIST, json);
         editor.commit();
-
     }
 
-    private void loadData(){
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME,MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString(TASK_LIST,null);
-        Type type = new TypeToken<List<String>>() {}.getType();
-        mStringListA = gson.fromJson(json,type);
-        if (mStringListA == null){
-            mStringListA = new ArrayList<>();
-        }
-    }
 }
